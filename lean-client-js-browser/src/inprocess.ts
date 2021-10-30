@@ -76,7 +76,7 @@ export class InProcessTransport implements Transport {
         };
         Module.printErr = (text: string) => conn.error.fire({error: 'stderr', chunk: text});
 
-        Module.TOTAL_MEMORY = this.memoryMB * 1024 * 1024;
+        Module.INITIAL_MEMORY = this.memoryMB * 1024 * 1024;
 
         const emscriptenInitialized = new Promise((resolve, reject) => Module.onRuntimeInitialized = resolve);
 
@@ -107,7 +107,7 @@ export class InProcessTransport implements Transport {
             const BrowserFS = new FS();
             BrowserFS.initialize(libraryFS);
             const BFS = new EmscriptenFS(Module.FS, Module.PATH, Module.ERRNO_CODES, BrowserFS);
-            Module.FS.createFolder(Module.FS.root, 'library', true, true);
+            Module.FS.mkdir('/library');
             Module.FS.mount(BFS, {root: '/'}, '/library');
             this.info = library.urls;
         }
